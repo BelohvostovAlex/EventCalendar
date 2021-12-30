@@ -6,15 +6,20 @@ import EventForm from '../components/EventForm'
 import Modal from 'antd/lib/modal/Modal'
 import { useActions } from '../hooks/useActions'
 import { useTypedSelector } from '../hooks/useTypedSelector'
+import { IEvent } from '../models/IEvent'
 
 const EventCalendar: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = React.useState(false);
-    const  {fetchGuests} = useActions()
-    const {guests} = useTypedSelector(state => state.eventReducer)
+    const  {fetchGuests, fetchEvents} = useActions()
+    const {guests, events} = useTypedSelector(state => state.eventReducer)
+    const {user} = useTypedSelector(state => state.authReducer)
+    const {createEvent} = useActions()
 
     React.useEffect(() => {
       fetchGuests()
+      fetchEvents(user.username)
     }, [])
+    
     const showModal = () => {
         setIsModalVisible(true);
       };
@@ -26,14 +31,19 @@ const EventCalendar: React.FC = () => {
       const handleCancel = () => {
         setIsModalVisible(false);
       };
+
+      const submit = (e: IEvent) => {
+        createEvent(e)
+        setIsModalVisible(false)
+      }
     return (
         <Layout>
-            <EventCalendarComponent events={[]}/>
+            <EventCalendarComponent events={events}/>
             <Row justify='center'>
                 <Button onClick={showModal}>Add an Event</Button>
             </Row>
             <Modal title="Add an event" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={null}>
-                <EventForm guests={guests}/>
+                <EventForm guests={guests} submit={submit}/>
             </Modal>
         </Layout>
     )

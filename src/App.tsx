@@ -18,7 +18,6 @@ const App: React.FC = () => {
       setIsAuth(true)
     }
   }, [])
-  console.log(state)
 
   return (
     <Layout>
