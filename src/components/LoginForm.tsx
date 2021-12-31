@@ -15,7 +15,7 @@ const LoginForm: React.FC = () => {
   const { login } = useActions();
 
   const submit = () => {
-    login(username, password);
+    login(username.trim(), password);
   };
 
   return (
